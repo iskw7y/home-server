@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  gitea:
+    image: gitea/gitea:1.9.3
+    ports:
+      - '3000:3000'
+    links:
+      - giteadb
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: giteadb:5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWD: dUS7yd5KnBT1bFtM3rlK
+    volumes:
+      - gitea-data:/data
+  giteadb:
+    image: postgres:11.5-alpine
+    environment:
+      POSTGRES_PASSWORD: dUS7yd5KnBT1bFtM3rlK
+    volumes:
+      - giteadb-data:/var/lib/postgresql/data
+  rundeck:
+    image: rundeck/rundeck:3.0.24
+    ports:
+      - '4440:4440'
+    links:
+      - rundeckdb
+      - socat
+    environment:
+      RUNDECK_DATABASE_DRIVER: org.postgresql.Driver
+      RUNDECK_DATABASE_URL: jdbc:postgresql://rundeckdb:5432/postgres
+      RUNDECK_DATABASE_USERNAME: postgres
+      RUNDECK_DATABASE_PASSWORD: nNxhTKCeI8PRByskwtd9
+      DOCKER_HOST: tcp://socat:2375
+    volumes:
+      - rundeck-data:/home/rundeck/server/data
+      - $HOME/bin/docker:/usr/local/bin/docker
+  rundeckdb:
+    image: postgres:11.5-alpine
+    environment:
+      POSTGRES_PASSWORD: nNxhTKCeI8PRByskwtd9
+    volumes:
+      - rundeckdb-data:/var/lib/postgresql/data
+  socat:
+    image: alpine/socat:1.0.3
+    volumes:
+      - /run/user/1000/docker.sock:/var/run/docker.sock
+    command: -v tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+  dozzle:
+    image: amir20/dozzle:v1.15.7
+    ports:
+      - '8080:8080'
+    volumes:
+      - /run/user/1000/docker.sock:/var/run/docker.sock
+
+volumes:
+  gitea-data:
+  giteadb-data:
+  rundeck-data:
+  rundeckdb-data:
