@@ -5,22 +5,8 @@ services:
     image: gitea/gitea:1.9.3
     ports:
       - '3000:3000'
-    links:
-      - giteadb
-    environment:
-      DB_TYPE: postgres
-      DB_HOST: giteadb:5432
-      DB_NAME: postgres
-      DB_USER: postgres
-      DB_PASSWD: dUS7yd5KnBT1bFtM3rlK
     volumes:
-      - gitea-data:/data
-  giteadb:
-    image: postgres:11.5-alpine
-    environment:
-      POSTGRES_PASSWORD: dUS7yd5KnBT1bFtM3rlK
-    volumes:
-      - giteadb-data:/var/lib/postgresql/data
+      - gitea_data:/data
   jenkins:
     image: jenkins/jenkins:lts
     ports:
@@ -45,6 +31,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
-  gitea-data:
-  giteadb-data:
+  gitea_data:
   jenkins_home:
