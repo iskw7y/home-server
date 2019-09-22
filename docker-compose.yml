@@ -8,21 +8,13 @@ services:
     volumes:
       - gitea_data:/data
   jenkins:
-    image: jenkins/jenkins:lts
+    build: dockerfile/jenkins
     ports:
       - '4440:8080'
-    depends_on:
-      - socat
-    environment:
-      DOCKER_HOST: tcp://socat:2375
     volumes:
       - jenkins_home:/var/jenkins_home
       - /usr/bin/docker:/usr/bin/docker
-  socat:
-    image: alpine/socat:1.0.3
-    volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: -v tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
   dozzle:
     image: amir20/dozzle:v1.15.7
     ports:
