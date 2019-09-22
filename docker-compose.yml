@@ -46,14 +46,14 @@ services:
   socat:
     image: alpine/socat:1.0.3
     volumes:
-      - /run/user/1000/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
     command: -v tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
   dozzle:
     image: amir20/dozzle:v1.15.7
     ports:
       - '8080:8080'
     volumes:
-      - /run/user/1000/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   gitea-data:

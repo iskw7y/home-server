@@ -2,11 +2,12 @@
 
 set -eux
 
-curl -sSL https://get.docker.com/rootless | sh
-systemctl --user enable docker
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io
 
-curl -sSL https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o $HOME/bin/docker-compose
-chmod 755 $HOME/bin/docker-compose
-
-# export PATH=$HOME/bin:$PATH
-# export DOCKER_HOST=unix:///run/user/1000/docker.sock
+curl -fsSL https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod 755 /usr/local/bin/docker-compose
