@@ -21,28 +21,17 @@ services:
       POSTGRES_PASSWORD: dUS7yd5KnBT1bFtM3rlK
     volumes:
       - giteadb-data:/var/lib/postgresql/data
-  rundeck:
-    image: rundeck/rundeck:3.0.24
+  jenkins:
+    image: jenkins/jenkins:lts
     ports:
-      - '4440:4440'
-    links:
-      - rundeckdb
+      - '4440:8080'
+    depends_on:
       - socat
     environment:
-      RUNDECK_DATABASE_DRIVER: org.postgresql.Driver
-      RUNDECK_DATABASE_URL: jdbc:postgresql://rundeckdb:5432/postgres
-      RUNDECK_DATABASE_USERNAME: postgres
-      RUNDECK_DATABASE_PASSWORD: nNxhTKCeI8PRByskwtd9
       DOCKER_HOST: tcp://socat:2375
     volumes:
-      - rundeck-data:/home/rundeck/server/data
-      - $HOME/bin/docker:/usr/local/bin/docker
-  rundeckdb:
-    image: postgres:11.5-alpine
-    environment:
-      POSTGRES_PASSWORD: nNxhTKCeI8PRByskwtd9
-    volumes:
-      - rundeckdb-data:/var/lib/postgresql/data
+      - jenkins_home:/var/jenkins_home
+      - /usr/bin/docker:/usr/bin/docker
   socat:
     image: alpine/socat:1.0.3
     volumes:
@@ -58,5 +47,4 @@ services:
 volumes:
   gitea-data:
   giteadb-data:
-  rundeck-data:
-  rundeckdb-data:
+  jenkins_home:
